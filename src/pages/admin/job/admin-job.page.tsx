@@ -1,13 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { Briefcase, MapPin } from "lucide-react";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useParams } from "react-router-dom";
+import JobApplicationCard from "./components/JobApplicationCard";
 
 function JobPage() {
   const job = {
+    _id: "xyz",
     title: "Intern - Software Engineer",
     description:
       "We are seeking a motivated and enthusiastic Software Engineering Intern to join our dynamic team. As a Software Engineering Intern, you will have the opportunity to work closely with experienced developers and contribute to real-world projects. This internship is designed to provide valuable hands-on experience, foster professional growth, and enhance your technical skills.",
@@ -20,26 +17,13 @@ function JobPage() {
     ],
   };
 
-  const { id } = useParams();
-  console.log(id); //Gives us the value of the route param.
-
-  const [formData, setFormData] = useState({
-    fullName: "",
-    a1: "",
-    a2: "",
-    a3: "",
-  });
-
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(formData);
-  };
+  const jobApplications = [
+    {
+      _id: "1",
+      fullName: "Manupa Samarawickrama",
+      jobId: "xyz",
+    },
+  ];
 
   return (
     <div>
@@ -55,39 +39,29 @@ function JobPage() {
             <span>{job?.location}</span>
           </div>
         </div>
+        {/* <div className="gap-x-4 flex items-center mt-4">
+          <Badge>NodeJS</Badge>
+          <Badge>ReactJS</Badge>
+          <Badge>AWS</Badge>
+        </div> */}
       </div>
       <div className="mt-4 py-4">
         <p>{job?.description}</p>
       </div>
       <Separator />
-      <form className="py-8" onSubmit={handleSubmit}>
-        <div>
-          <h3>Full Name</h3>
-          <Input
-            className="mt-2"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            required
-          />
+      <div className="py-8">
+        <h2>Job Applications</h2>
+        <div className="mt-4 flex flex-col gap-y-4">
+          {jobApplications.map((application) => (
+            <JobApplicationCard
+              key={application._id}
+              fullName={application.fullName}
+              _id={application._id}
+              jobId={application.jobId}
+            />
+          ))}
         </div>
-        {job.questions.map((question, i) => {
-          return (
-            <div key={i} className="mt-4">
-              <h3>{question}</h3>
-              <Textarea
-                className="mt-2"
-                name={`a${i + 1}`}
-                required
-                onChange={handleChange}
-              />
-            </div>
-          );
-        })}
-        <Button type="submit" className="mt-8 bg-card text-card-foreground">
-          Submit
-        </Button>
-      </form>
+      </div>
     </div>
   );
 }

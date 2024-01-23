@@ -8,6 +8,11 @@ import HomePage from "./pages/home/home.page";
 import SignInPage from "./pages/sign-in.page";
 import SignUpPage from "./pages/sign-up.page";
 import JobPage from "./pages/job/job.page";
+import AdminMainLayout from "./layout/admin.layout";
+import AdminJobPostsPage from "./pages/admin/jobPosts/admin-job-posts.page";
+import JobCreatePage from "./pages/admin/createJob/job-create.page";
+import AdminJobPage from "./pages/admin/job/admin-job.page";
+import AdminJobApplicationPage from "./pages/admin/jobApplication/admin-job-application.page";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +29,28 @@ const router = createBrowserRouter([
           {
             path: "job/:id",
             element: <JobPage />,
+          },
+        ],
+      },
+      {
+        path: "admin",
+        element: <AdminMainLayout />,
+        children: [
+          {
+            path: "jobs",
+            element: <AdminJobPostsPage />,
+          },
+          {
+            path: "job/create",
+            element: <JobCreatePage />,
+          },
+          {
+            path: "job/:id",
+            element: <AdminJobPage />,
+          },
+          {
+            path: "job/:id/application/:applicationId",
+            element: <AdminJobApplicationPage />,
           },
         ],
       },

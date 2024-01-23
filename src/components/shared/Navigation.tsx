@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
 
 function Navigation() {
   return (
@@ -13,7 +14,9 @@ function Navigation() {
 
         <div className="flex gap-x-4 items-center">
           <Link to={"/sign-in"}>Sign In</Link>
-          <Link to={"/sign-up"}>Sign Up</Link>
+          <Button asChild>
+            <Link to={"/sign-up"}>Sign Up</Link>
+          </Button>
         </div>
       </div>
     </nav>
