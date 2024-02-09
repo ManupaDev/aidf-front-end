@@ -20,9 +20,23 @@ function JobCreatePage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formData);
+    const res = await fetch("http://localhost:8000/jobs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: formData.title,
+        description: formData.description,
+        type: formData.type,
+        location: formData.location,
+        questions: [formData.q1, formData.q2, formData.q3],
+      }),
+    });
+    console.log(res);
   };
 
   return (

@@ -1,29 +1,69 @@
 import { Separator } from "@/components/ui/separator";
 import { Briefcase, MapPin } from "lucide-react";
 import JobApplicationCard from "./components/JobApplicationCard";
+import { Job, JobDetails } from "@/types/job";
+import { useEffect, useState } from "react";
+import { JobApplication } from "@/types/jobApplication";
+import { useParams } from "react-router-dom";
 
 function JobPage() {
-  const job = {
-    _id: "xyz",
-    title: "Intern - Software Engineer",
-    description:
-      "We are seeking a motivated and enthusiastic Software Engineering Intern to join our dynamic team. As a Software Engineering Intern, you will have the opportunity to work closely with experienced developers and contribute to real-world projects. This internship is designed to provide valuable hands-on experience, foster professional growth, and enhance your technical skills.",
-    type: "Full-time",
-    location: "Remote",
-    questions: [
-      "Share your academic background and highlight key programming concepts you've mastered. How has your education shaped your current tech skill set ?",
-      "Describe your professional development, emphasizing any certifications obtained. How have these certifications enriched your technical abilities, and can you provide an example of their practical application ?",
-      "Discuss notable projects in your programming experience. What challenges did you face, and how did you apply your skills to overcome them? Highlight the technologies used and the impact of these projects on your overall growth as a prefessional ?",
-    ],
-  };
+  const [job, setJob] = useState<JobDetails | null>(null);
+  const [isJobLoading, setIsJobLoading] = useState(true);
+  const [jobApplications, setJobApplications] = useState<Array<JobApplication>>(
+    []
+  );
+  const [isJobApplicationsLoading, setIsJobApplicationsLoading] =
+    useState(true);
+  const { id } = useParams();
 
-  const jobApplications = [
-    {
-      _id: "1",
-      fullName: "Manupa Samarawickrama",
-      jobId: "xyz",
-    },
-  ];
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    const getJobById = async (id: string) => {
+      const res = await fetch(`http://localhost:8000/jobs/${id}`, {
+        method: "GET",
+      });
+      const data: Job = await res.json();
+      return data;
+    };
+
+    const getJobApllicationsForJob = async (id: string) => {
+      const res = await fetch(
+        `http://localhost:8000/jobApplications?jobId=${id}`,
+        {
+          method: "GET",
+        }
+      );
+      const data: JobApplication[] = await res.json();
+      return data;
+    };
+
+    getJobById(id)
+      .then((data) => {
+        setJob(data as JobDetails);
+        setIsJobLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsJobLoading(false);
+      });
+
+    getJobApllicationsForJob(id)
+      .then((data) => {
+        setJobApplications(data);
+        setIsJobApplicationsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsJobApplicationsLoading(false);
+      });
+  }, [id]);
+
+  if (isJobLoading || isJobApplicationsLoading) {
+    return null;
+  }
 
   return (
     <div>
@@ -51,13 +91,13 @@ function JobPage() {
       <Separator />
       <div className="py-8">
         <h2>Job Applications</h2>
-        <div className="mt-4 flex flex-col gap-y-4">
+        <div className="mt-4 flex flex-col gap-y-4">          
           {jobApplications.map((application) => (
             <JobApplicationCard
               key={application._id}
               fullName={application.fullName}
               _id={application._id}
-              jobId={application.jobId}
+              jobId={id!}
             />
           ))}
         </div>

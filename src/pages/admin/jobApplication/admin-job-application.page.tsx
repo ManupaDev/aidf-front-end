@@ -2,20 +2,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { JobApplication } from "@/types/jobApplication";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 function AdminJobApplicationPage() {
-  const jobApplication = {
-    _id: "1",
-    fullName: "Manupa Samarawickrama",
-    jobId: "xyz",
-    rating: "Good",
-    answers: [
-      "Lorem ipsum dolor sit amet",
-      "Lorem ipsum dolor sit amet",
-      "Lorem ipsum dolor sit amet",
-    ],
-  };
+  const [jobApplication, setJobApplication] = useState<JobApplication | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { applicationId } = useParams();
+
+  useEffect(() => {
+    if (!applicationId) {
+      return;
+    }
+    const getJobApplicationById = async (id: string) => {
+      const res = await fetch(`http://localhost:8000/jobApplications/${id}`, {
+        method: "GET",
+      });
+      const data: JobApplication = await res.json();
+      return data;
+    };
+
+    getJobApplicationById(applicationId)
+      .then((data) => {
+        setJobApplication(data as JobApplication);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  }, [applicationId]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col gap-y-4">
