@@ -1,10 +1,11 @@
 import { Separator } from "@/components/ui/separator";
-import { Briefcase, MapPin } from "lucide-react";
-import JobApplicationCard from "./components/JobApplicationCard";
-import { Job, JobDetails } from "@/types/job";
-import { useEffect, useState } from "react";
+import { getJobApllicationsForJob, getJobById } from "@/lib/services/api";
+import { JobDetails } from "@/types/job";
 import { JobApplication } from "@/types/jobApplication";
+import { Briefcase, MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import JobApplicationCard from "./components/JobApplicationCard";
 
 function JobPage() {
   const [job, setJob] = useState<JobDetails | null>(null);
@@ -20,35 +21,6 @@ function JobPage() {
     if (!id) {
       return;
     }
-
-    const getJobById = async (id: string) => {
-      const token = await window.Clerk.session.getToken();
-
-      const res = await fetch(`http://localhost:8000/jobs/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data: Job = await res.json();
-      return data;
-    };
-
-    const getJobApllicationsForJob = async (id: string) => {
-      const token = await window.Clerk.session.getToken();
-
-      const res = await fetch(
-        `http://localhost:8000/jobApplications?jobId=${id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data: JobApplication[] = await res.json();
-      return data;
-    };
 
     getJobById(id)
       .then((data) => {

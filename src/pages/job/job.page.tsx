@@ -2,18 +2,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { getJobById } from "@/lib/services/api";
 import { Job } from "@/types/job";
 import { useUser } from "@clerk/clerk-react";
 import { Briefcase, MapPin } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function JobPage() {
   const [job, setJob] = useState<Job | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const user = useUser();
-  console.log(user);
+  const { user, isLoaded, isSignedIn } = useUser();
+  const navigate = useNavigate();
 
   const { id } = useParams();
   console.log(id); //Gives us the value of the route param.
@@ -26,25 +27,16 @@ function JobPage() {
   });
 
   useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      return navigate("/sign-in");
+    }
+
     if (!id) return;
-    const getJobById = async (id: string) => {
-      const token = await window.Clerk.session.getToken();
-
-      const res = await fetch(`http://localhost:8000/jobs/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data: Job = await res.json();
-      return data;
-    };
-
     getJobById(id).then((data) => {
       setJob(data);
       setIsLoading(false);
     });
-  }, [id]);
+  }, [id, isLoaded, isSignedIn, navigate]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -60,7 +52,7 @@ function JobPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: user.user?.id,
+        userId: user?.id,
         fullName: formData.fullName,
         job: id,
         answers: [formData.a1, formData.a2, formData.a3],
@@ -69,7 +61,7 @@ function JobPage() {
     console.log(res);
   };
 
-  if (isLoading || job === null) {
+  if (isLoading || job === null || !isLoaded) {
     return (
       <div>
         <h2>Loading...</h2>

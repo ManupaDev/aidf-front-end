@@ -1,4 +1,5 @@
 import JobCard from "@/components/shared/JobCard";
+import { getJobs } from "@/lib/services/api";
 import { Job } from "@/types/job";
 import { useState, useEffect } from "react";
 
@@ -6,19 +7,6 @@ function JobPostsSection() {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    const getJobs = async () => {
-      const token = await window.Clerk.session.getToken();
-
-      const res = await fetch("http://localhost:8000/jobs", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data: Job[] = await res.json();
-      return data;
-    };
-
     getJobs()
       .then((data) => setJobs(data as Job[]))
       .catch((err) => console.log(err));

@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { getJobApplicationById } from "@/lib/services/api";
 import { cn } from "@/lib/utils";
 import { JobApplication } from "@/types/jobApplication";
 import { useEffect, useState } from "react";
@@ -10,27 +11,12 @@ function AdminJobApplicationPage() {
   const [jobApplication, setJobApplication] = useState<JobApplication | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(true);
 
+  const [isLoading, setIsLoading] = useState(true);
   const { applicationId } = useParams();
 
   useEffect(() => {
-    if (!applicationId) {
-      return;
-    }
-    const getJobApplicationById = async (id: string) => {
-      const token = await window.Clerk.session.getToken();
-
-      const res = await fetch(`http://localhost:8000/jobApplications/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data: JobApplication = await res.json();
-      return data;
-    };
-
+    if (!applicationId) return;
     getJobApplicationById(applicationId)
       .then((data) => {
         setJobApplication(data as JobApplication);
@@ -43,7 +29,11 @@ function AdminJobApplicationPage() {
   }, [applicationId]);
 
   if (isLoading) {
-    return null;
+    return (
+      <div>
+        <h2>Loading...</h2>
+      </div>
+    );
   }
 
   return (
