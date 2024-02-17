@@ -22,18 +22,28 @@ function JobPage() {
     }
 
     const getJobById = async (id: string) => {
+      const token = await window.Clerk.session.getToken();
+
       const res = await fetch(`http://localhost:8000/jobs/${id}`, {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data: Job = await res.json();
       return data;
     };
 
     const getJobApllicationsForJob = async (id: string) => {
+      const token = await window.Clerk.session.getToken();
+
       const res = await fetch(
         `http://localhost:8000/jobApplications?jobId=${id}`,
         {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const data: JobApplication[] = await res.json();
@@ -91,7 +101,7 @@ function JobPage() {
       <Separator />
       <div className="py-8">
         <h2>Job Applications</h2>
-        <div className="mt-4 flex flex-col gap-y-4">          
+        <div className="mt-4 flex flex-col gap-y-4">
           {jobApplications.map((application) => (
             <JobApplicationCard
               key={application._id}

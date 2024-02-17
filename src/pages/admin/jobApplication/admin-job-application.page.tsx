@@ -19,8 +19,13 @@ function AdminJobApplicationPage() {
       return;
     }
     const getJobApplicationById = async (id: string) => {
+      const token = await window.Clerk.session.getToken();
+
       const res = await fetch(`http://localhost:8000/jobApplications/${id}`, {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data: JobApplication = await res.json();
       return data;

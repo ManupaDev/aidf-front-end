@@ -6,15 +6,20 @@ function JobSection() {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    const fetchJobs = async () => {
+    const getJobs = async () => {
+      const token = await window.Clerk.session.getToken();
+
       const res = await fetch("http://localhost:8000/jobs", {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data: Job[] = await res.json();
       return data;
     };
 
-    fetchJobs().then((data) => setJobs(data));
+    getJobs().then((data) => setJobs(data));
   }, []);
 
   return (

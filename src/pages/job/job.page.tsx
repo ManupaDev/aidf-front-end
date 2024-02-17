@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Job } from "@/types/job";
+import { useUser } from "@clerk/clerk-react";
 import { Briefcase, MapPin } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -10,6 +11,9 @@ import { useParams } from "react-router-dom";
 function JobPage() {
   const [job, setJob] = useState<Job | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const user = useUser();
+  console.log(user);
 
   const { id } = useParams();
   console.log(id); //Gives us the value of the route param.
@@ -22,15 +26,21 @@ function JobPage() {
   });
 
   useEffect(() => {
-    const fetchJob = async () => {
+    if (!id) return;
+    const getJobById = async (id: string) => {
+      const token = await window.Clerk.session.getToken();
+
       const res = await fetch(`http://localhost:8000/jobs/${id}`, {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data: Job = await res.json();
       return data;
     };
 
-    fetchJob().then((data) => {
+    getJobById(id).then((data) => {
       setJob(data);
       setIsLoading(false);
     });
@@ -50,7 +60,7 @@ function JobPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: "manupa",
+        userId: user.user?.id,
         fullName: formData.fullName,
         job: id,
         answers: [formData.a1, formData.a2, formData.a3],
