@@ -17,7 +17,6 @@ function JobPage() {
   const navigate = useNavigate();
 
   const { id } = useParams();
-  console.log(id); //Gives us the value of the route param.
 
   const [formData, setFormData] = useState({
     fullName: "",
