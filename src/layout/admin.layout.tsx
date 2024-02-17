@@ -8,10 +8,15 @@ function AdminMainLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!isSignedIn) {
       return navigate("/sign-in");
     }
-    if (user?.publicMetadata?.role === "admin") {
+
+    if (user?.publicMetadata?.role !== "admin") {
       return navigate("/");
     }
   }, [isLoaded, isSignedIn, navigate, user]);

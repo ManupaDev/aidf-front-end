@@ -27,7 +27,11 @@ function JobPage() {
   });
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!isSignedIn) {
       return navigate("/sign-in");
     }
 
@@ -61,7 +65,7 @@ function JobPage() {
     console.log(res);
   };
 
-  if (isLoading || job === null || !isLoaded) {
+  if (isLoading || job === null) {
     return (
       <div>
         <h2>Loading...</h2>
