@@ -1,7 +1,7 @@
 import JobCard from "@/components/shared/JobCard";
 import { useEffect, useState } from "react";
 import { Job } from "@/types/job";
-import { getJobs } from "@/lib/services/api";
+import { getJobs } from "@/lib/services/api/jobs";
 
 function JobSection() {
   const [jobs, setJobs] = useState<Job[]>([]);

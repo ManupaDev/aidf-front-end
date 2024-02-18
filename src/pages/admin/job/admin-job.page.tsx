@@ -1,11 +1,12 @@
 import { Separator } from "@/components/ui/separator";
-import { getJobApllicationsForJob, getJobById } from "@/lib/services/api";
+import { getJobById } from "@/lib/services/api/jobs";
 import { JobDetails } from "@/types/job";
 import { JobApplication } from "@/types/jobApplication";
 import { Briefcase, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import JobApplicationCard from "./components/JobApplicationCard";
+import { getJobApllicationsForJob } from "@/lib/services/api/jobApplications";
 
 function JobPage() {
   const [job, setJob] = useState<JobDetails | null>(null);

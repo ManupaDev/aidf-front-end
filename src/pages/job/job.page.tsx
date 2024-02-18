@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { getJobById } from "@/lib/services/api";
+import { createJobApplication } from "@/lib/services/api/jobApplications";
+import { getJobById } from "@/lib/services/api/jobs";
 import { Job } from "@/types/job";
 import { useUser } from "@clerk/clerk-react";
 import { Briefcase, MapPin } from "lucide-react";
@@ -49,19 +50,15 @@ function JobPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const res = await fetch("http://localhost:8000/jobApplications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: user?.id,
-        fullName: formData.fullName,
-        job: id,
-        answers: [formData.a1, formData.a2, formData.a3],
-      }),
+    if (!user) return;
+    if (!id) return;
+
+    await createJobApplication({
+      userId: user.id,
+      fullName: formData.fullName,
+      job: id,
+      answers: [formData.a1, formData.a2, formData.a3],
     });
-    console.log(res);
   };
 
   if (isLoading || job === null) {

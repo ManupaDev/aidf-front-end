@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { getJobApplicationById } from "@/lib/services/api";
+import { getJobApplicationById } from "@/lib/services/api/jobApplications";
 import { cn } from "@/lib/utils";
 import { JobApplication } from "@/types/jobApplication";
 import { useEffect, useState } from "react";

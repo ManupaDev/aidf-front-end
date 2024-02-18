@@ -1,5 +1,5 @@
 import JobCard from "@/components/shared/JobCard";
-import { getJobs } from "@/lib/services/api";
+import { getJobs } from "@/lib/services/api/jobs";
 import { Job } from "@/types/job";
 import { useState, useEffect } from "react";
 
