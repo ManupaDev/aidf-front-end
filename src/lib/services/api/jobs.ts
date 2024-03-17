@@ -1,9 +1,12 @@
 import { Job } from "@/types/job";
 
 export const getJobs = async () => {
-  const res = await fetch("http://localhost:8000/jobs", {
-    method: "GET",
-  });
+  const res = await fetch(
+    "https://aidf-back-end-production.up.railway.app/jobs",
+    {
+      method: "GET",
+    }
+  );
   const data: Job[] = await res.json();
   return data;
 };
@@ -11,12 +14,15 @@ export const getJobs = async () => {
 export const getJobById = async (id: string) => {
   const token = await window.Clerk.session.getToken();
 
-  const res = await fetch(`http://localhost:8000/jobs/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await fetch(
+    `https://aidf-back-end-production.up.railway.app/jobs/${id}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   const data: Job = await res.json();
   return data;
 };
@@ -36,7 +42,7 @@ export const createJob = async ({
 }) => {
   const token = await window.Clerk.session.getToken();
 
-  await fetch("http://localhost:8000/jobs", {
+  await fetch("https://aidf-back-end-production.up.railway.app/jobs", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
